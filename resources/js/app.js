@@ -1,11 +1,13 @@
 import VueRouter from 'vue-router';
 import router from './router';
-require('./bootstrap');
+import VueToastr from "vue-toastr";
 
+require('./bootstrap');
 window.Vue = require('vue');
 
 Vue.router = router;
 Vue.use(VueRouter);
+Vue.use(VueToastr);
 
 axios.defaults.baseURL = '/api/v1';
 

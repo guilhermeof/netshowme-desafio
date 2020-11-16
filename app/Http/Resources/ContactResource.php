@@ -22,7 +22,7 @@ class ContactResource extends JsonResource
             'message' => $this->message,
             'attachment' => new AttachmentResource($this->attachment),
             'ip' => $this->ip,
-            'data_criacao' => $this->created_at->toDateTimeString(),
+            'created_at' => $this->created_at->format('d-m-Y H:i:s'),
         ];
     }
 }
