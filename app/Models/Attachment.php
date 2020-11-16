@@ -15,7 +15,7 @@ class Attachment extends Model
         'location'
     ];
 
-    public static function fileUri($attachmentsId)
+    public function fileUri($attachmentsId)
     {
         return route('file.show', ['id' => $attachmentsId]);
     }

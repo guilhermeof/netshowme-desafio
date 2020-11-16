@@ -58,6 +58,7 @@ class ContactsController extends Controller
     public function store(ContactRequest $request)
     {
         try{
+            DB::beginTransaction();
             $data = $request->all();
             $data['ip'] = $request->ip();
 
@@ -68,8 +69,10 @@ class ContactsController extends Controller
 
             Mail::send(new ContactMail($contact));
 
+            DB::commit();
             return new JsonResponse(new ContactResource($contact), JsonResponse::HTTP_CREATED);
         }catch (\Exception $exception){
+            DB::rollBack();
             if (config('app.debug')) {
                 throw $exception;
             }
