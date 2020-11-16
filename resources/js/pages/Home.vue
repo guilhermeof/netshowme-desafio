@@ -1,7 +1,6 @@
 <template>
     <div class="container">
         <div class="py-5 text-center">
-            <!--            <img class="d-block mx-auto mb-4" src="../assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">-->
             <h2>Netshow.me Desafio</h2>
         </div>
         <div class="row">
@@ -29,7 +28,7 @@
                                 type="email"
                                 class="form-control"
                                 id="email"
-                                placeholder="you@example.com"
+                                placeholder="email@email.com"
                                 required
                                 v-model="data.email"
                                 :class="{'is-invalid': errors.email}"
@@ -82,7 +81,11 @@
                     </div>
 
                     <hr class="mb-4">
-                    <button class="btn btn-primary btn-lg btn-block" type="submit">Cadastrar</button>
+                    <button :disabled="loading" class="btn btn-primary btn-lg btn-block" type="submit">
+                        <span v-if="loading" class="spinner-border" role="status" aria-hidden="true"></span>
+                        <span v-if="loading" class="sr-only">Enviando...</span>
+                        <span v-else>Cadastrar</span>
+                    </button>
                 </form>
             </div>
         </div>
@@ -143,7 +146,8 @@
                     attachment: null
                 },
                 errors: {},
-                contacts: []
+                contacts: [],
+                loading: false
             }
         },
         mounted() {
@@ -151,6 +155,7 @@
         },
         methods: {
             onSubmit() {
+                this.loading = true;
                 let formData = this.getFormData(this.data);
 
                 axios
@@ -163,9 +168,10 @@
                         this.$toastr.s('Contato criado com sucesso', 'Sucesso')
                         this.clearForm();
                         this.getContacts();
+                        this.loading = false;
                     })
                     .catch(error => {
-                        this.has_error = true;
+                        this.loading = false;
                         if (error.response.status === 422) {
                             this.$toastr.w(
                                 "Verifique os dados preenchidos e tente novamente",
@@ -177,18 +183,17 @@
                         if (error.response.status === 500) {
                             this.$toastr.e(
                                 "Caso o problema persista entre em contato com o Administrador",
-                                "Erro ao tentar cadastrar uma disciplina"
+                                "Erro ao tentar cadastrar um contato"
                             );
                         }
                     });
             },
             getContacts() {
-                this.loading = true;
                 axios.get('contacts').then(response => {
                     this.contacts = response.data;
                 }).catch(err => {
                     this.$toastr.e("Caso o problema persista entre em contato com o Administrador",
-                        "Erro ao tentar resgatar as aulas");
+                        "Erro ao tentar resgatar os contatos");
                 });
             },
             getFormData(data) {

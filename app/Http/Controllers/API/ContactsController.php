@@ -4,12 +4,13 @@ namespace App\Http\Controllers\API;
 
 use DB;
 use App\Models\Contact;
-use Illuminate\Http\Request;
+use App\Mail\ContactMail;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ContactRequest;
 use App\Http\Resources\ContactResource;
 use App\Repositories\AttachmentRepository;
+use Illuminate\Support\Facades\Mail;
 
 class ContactsController extends Controller
 {
@@ -35,6 +36,19 @@ class ContactsController extends Controller
     }
 
     /**
+     * Show contact.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show($id)
+    {
+        $contact = Contact::findOrFail($id);
+
+        return new JsonResponse(new ContactResource($contact));
+    }
+
+    /**
      * Store contact.
      *
      * @param ContactRequest $request
@@ -52,6 +66,8 @@ class ContactsController extends Controller
 
             $contact = Contact::create($data);
 
+            Mail::send(new ContactMail($contact));
+
             return new JsonResponse(new ContactResource($contact), JsonResponse::HTTP_CREATED);
         }catch (\Exception $exception){
             if (config('app.debug')) {
@@ -60,41 +76,5 @@ class ContactsController extends Controller
 
             return new JsonResponse(['message' => 'Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.'], JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
-    }
-
-    /**
-     * Show contact.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function show($id)
-    {
-        $contact = Contact::findOrFail($id);
-
-        return new JsonResponse(new ContactResource($contact));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }
