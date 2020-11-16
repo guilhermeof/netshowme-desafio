@@ -19,7 +19,7 @@ Após efetuar o clone do projeto acesse a pasta e rode o seguinte comando para i
 
     composer install
     
-Após a instalação copia o arquivo .env.example (Caso esteja em um ambiente linux, basta executar o seguinte comando):
+Após a instalação copie o arquivo .env.example (Caso esteja em um ambiente linux, basta executar o seguinte comando):
 
     cp .env.example .env
 
